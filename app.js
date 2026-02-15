@@ -1,58 +1,94 @@
-// 1. นำ API Key ที่ได้จาก Google AI Studio มาใส่ในเครื่องหมายคำพูด
+// ใส่ API Key จากโปรเจกต์ใหม่ของคุณที่นี่
 const API_KEY = "AIzaSyAd8dv1PM-OCtGV_PBM17urbkvHRNDnBuo"; 
 
-const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
+// ใช้ Model รุ่นใหม่ตามที่คุณมีสิทธิ์ (gemini-2.0-flash)
+const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
 
-const display = document.getElementById('chat-display');
+const chatBox = document.getElementById('chat-box');
 const input = document.getElementById('user-input');
-const btn = document.getElementById('send-btn');
 
-async function askAI(question) {
-    addMessage(question, 'user');
+// กด Enter เพื่อส่งได้
+input.addEventListener("keypress", function(event) {
+    if (event.key === "Enter") {
+        askAI();
+    }
+});
+
+async function askAI() {
+    const question = input.value.trim();
+    if (!question) return;
+
+    // 1. แสดงข้อความผู้ใช้
+    addMessage(question, 'user-message');
     input.value = '';
-
-    // Prompt context
-    const prompt = `คุณเป็นมัคคุเทศก์ผู้เชี่ยวชาญพระบรมธาตุไชยา จังหวัดสุราษฎร์ธานี ให้ตอบคำถามนี้ด้วยความเป็นกันเองและถูกต้อง: ${question}`;
+    
+    // 2. แสดงสถานะกำลังพิมพ์ (Loading)
+    const loadingId = addMessage('<i class="fa-solid fa-circle-notch fa-spin"></i> กำลังค้นหาข้อมูล...', 'bot-message');
 
     try {
         const response = await fetch(URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
-                contents: [{ parts: [{ text: prompt }] }]
+                contents: [{
+                    parts: [{
+                        // Prompt สั่งให้ตอบกระชับและจัดรูปแบบสวยงาม
+                        text: `คุณคือมัคคุเทศก์ผู้เชี่ยวชาญ "พระบรมธาตุไชยา" จังหวัดสุราษฎร์ธานี 
+                        - ให้ตอบคำถามเกี่ยวกับประวัติศาสตร์ การเดินทาง หรือของฝาก อย่างผู้เชี่ยวชาญ
+                        - คำตอบต้อง: "กระชับ" "เข้าใจง่าย" และ "เป็นกันเอง"
+                        - จัดรูปแบบ: ใช้ Bullet point สำหรับรายการ, ใช้ตัวหนาสำหรับคำสำคัญ
+                        - ห้ามตอบยาวเหยียดจนน่าเบื่อ
+                        คำถาม: ${question}`
+                    }]
+                }]
             })
         });
 
-        const data = await response.json();
-
-        // 1. เช็คก่อนว่า API ตอบกลับมาแบบ Error หรือไม่
-        if (!response.ok) {
-            console.error("API Error:", data); // ดู Error จริงๆ ใน Console
-            throw new Error(data.error?.message || "เกิดข้อผิดพลาดจาก Server");
+        // เช็คโควตาเต็ม
+        if (response.status === 429) {
+            updateMessage(loadingId, "⚠️ ขออภัยครับ คนใช้งานเยอะเกินโควตา โปรดรอ 1 นาทีแล้วลองใหม่นะ");
+            return;
         }
 
-        // 2. เช็คว่ามีคำตอบ (candidates) กลับมาจริงไหม
-        if (data.candidates && data.candidates.length > 0) {
-            const reply = data.candidates[0].content.parts[0].text;
-            addMessage(reply, 'bot');
+        const data = await response.json();
+        
+        if (data.candidates) {
+            let reply = data.candidates[0].content.parts[0].text;
+            // จัดรูปแบบข้อความให้น่าอ่าน (แปลง Markdown เบื้องต้น)
+            reply = formatText(reply); 
+            updateMessage(loadingId, reply);
         } else {
-            // กรณี AI ไม่ตอบ (อาจเพราะติด Safety Filter)
-            addMessage("ขออภัยครับ AI ไม่สามารถตอบคำถามนี้ได้ (อาจเป็นเนื้อหาที่ไม่เหมาะสม)", 'bot');
+            updateMessage(loadingId, "ขออภัยครับ ไม่พบข้อมูลในขณะนี้");
         }
 
     } catch (error) {
-        console.error("System Error:", error); // ดู Error ใน Console
-        addMessage("ขออภัยครับ ระบบขัดข้องเล็กน้อย (ลองกด F12 ดู Console)", 'bot');
+        console.error("Error:", error);
+        updateMessage(loadingId, "❌ เกิดข้อผิดพลาดในการเชื่อมต่อ");
     }
 }
 
-function addMessage(text, side) {
+function addMessage(htmlContent, type) {
     const div = document.createElement('div');
-    div.className = `msg ${side}`;
-    div.innerText = text;
-    display.appendChild(div);
-    display.scrollTop = display.scrollHeight;
+    div.className = `message ${type}`;
+    div.innerHTML = `<div class="msg-content">${htmlContent}</div>`;
+    chatBox.appendChild(div);
+    chatBox.scrollTop = chatBox.scrollHeight;
+    return div; // คืนค่า element เพื่อใช้อัปเดตข้อความทีหลัง
 }
 
-btn.addEventListener('click', () => askAI(input.value));
-input.addEventListener('keypress', (e) => { if(e.key === 'Enter') askAI(input.value); });
+function updateMessage(element, newHtml) {
+    const contentDiv = element.querySelector('.msg-content');
+    contentDiv.innerHTML = newHtml;
+    chatBox.scrollTop = chatBox.scrollHeight;
+}
+
+// ฟังก์ชันแปลง Markdown เป็น HTML ง่ายๆ
+function formatText(text) {
+    // แปลงตัวหนา **text** -> <b>text</b>
+    let formatted = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+    // แปลง bullet point * -> •
+    formatted = formatted.replace(/^\* /gm, '• ');
+    // แปลงการขึ้นบรรทัดใหม่
+    formatted = formatted.replace(/\n/g, '<br>');
+    return formatted;
+}

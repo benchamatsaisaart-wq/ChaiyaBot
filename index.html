@@ -3,31 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chaiya AI Chatbot</title>
-    <link rel="stylesheet" href="style.css">
+    <title>พระบรมธาตุไชยา AI Chatbot</title>
     <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="chat-card">
+
+    <div class="chat-container">
         <div class="chat-header">
-            <div class="header-info">
-                <span class="status-dot"></span>
-                <div>
-                    <h2>พระบรมธาตุไชยา AI</h2>
-                    <p>ผู้เชี่ยวชาญประวัติศาสตร์ศรีวิชัย</p>
+            <div class="header-icon"><i class="fa-solid fa-gopuram"></i></div>
+            <div class="header-text">
+                <h2>มัคคุเทศก์ AI</h2>
+                <p>ผู้เชี่ยวชาญพระบรมธาตุไชยา</p>
+            </div>
+        </div>
+
+        <div id="chat-box" class="chat-box">
+            <div class="message bot-message">
+                <div class="msg-content">
+                    สวัสดีครับ 🙏 ผมคือ AI ผู้นำเที่ยวพระบรมธาตุไชยา<br>
+                    สอบถามประวัติ ความเป็นมา หรือเส้นทางเดินรถได้เลยครับ!
                 </div>
             </div>
         </div>
 
-        <div id="chat-display" class="chat-display">
-            <div class="msg bot">สวัสดีครับ ผมคือ AI ผู้นำเที่ยวพระบรมธาตุไชยา สอบถามข้อมูลประวัติหรือการเดินทางได้เลยครับ</div>
-        </div>
-
         <div class="input-area">
-            <input type="text" id="user-input" placeholder="พิมพ์คำถามของคุณที่นี่..." autocomplete="off">
-            <button id="send-btn">
-                <svg viewBox="0 0 24 24" width="24" height="24"><path fill="currentColor" d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-            </button>
+            <input type="text" id="user-input" placeholder="พิมพ์คำถามที่นี่..." autocomplete="off">
+            <button onclick="askAI()" id="send-btn"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
 
