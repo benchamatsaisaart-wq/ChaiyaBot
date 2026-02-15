@@ -1,6 +1,8 @@
-const API_KEY = "AIzaSyDZm_97i4sAvJ7M7stfIgdxWdLwIZBq0WY"; // ใช้ตัวใหม่ที่ลงท้ายด้วย IZBq0WY
-const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`; // ใช้รุ่น 1.5
+// 1. กลับมาใช้ Key ตัวใหม่ที่ลงท้ายด้วย IZBq0WY
+const API_KEY = "AIzaSyDZm_97i4sAvJ7M7stfIgdxWdLwIZBq0WY";
 
+// 2. ใช้ URL รุ่น 1.5-flash (เช็คตัวสะกด generateContent ให้ดีนะครับ)
+const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`;
 const chatBox = document.getElementById('chat-box');
 const input = document.getElementById('user-input');
 
