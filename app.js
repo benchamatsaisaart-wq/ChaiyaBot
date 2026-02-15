@@ -1,5 +1,5 @@
 // ใส่ API Key จากโปรเจกต์ใหม่ของคุณที่นี่
-const API_KEY = "AIzaSyAd8dv1PM-OCtGV_PBM17urbkvHRNDnBuo"; 
+const API_KEY = "AIzaSyDZm_97i4sAvJ7M7stfIgdxWdLwIZBq0WY"; 
 
 // ใช้ Model รุ่นใหม่ตามที่คุณมีสิทธิ์ (gemini-2.0-flash)
 const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${API_KEY}`;
