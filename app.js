@@ -1,5 +1,5 @@
 // 1. กลับมาใช้ Key ตัวใหม่ที่ลงท้ายด้วย IZBq0WY
-const API_KEY = "AIzaSyC8568qKqXfNQQAyKPYZukdGNHD_rSLso4";
+const API_KEY = "AIzaSyCR2N9Tdxu44BrECEw8xQlrMrkPqHxhlg0";
 
 const URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`;
 const chatBox = document.getElementById('chat-box');
